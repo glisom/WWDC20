@@ -1,5 +1,9 @@
 import UIKit
 
+protocol MeasureContentDelegate {
+    func nextStep(_ waterOunces: Double, _ coffeeGrams: Double)
+}
+
 public class MeasureContentView: UIView {
     let waterSlider = UISlider()
     let coffeeAmountLabel = UILabel()
@@ -8,6 +12,7 @@ public class MeasureContentView: UIView {
     let nextText = "Next"
     var waterOunces: Double = 12
     var coffeeGrams: Double = 21
+    var delegate: MeasureContentDelegate?
     
     public override func layoutSubviews() {
         waterAmountLabel.text = "\(waterOunces) Ounces of Water"
@@ -37,6 +42,7 @@ public class MeasureContentView: UIView {
         nextButton.layer.borderColor = UIColor.lightText.cgColor
         nextButton.layer.borderWidth = 2.0
         nextButton.layer.cornerRadius = 10.0
+        nextButton.addTarget(self, action: #selector(didTouchUpOnNext), for: .touchUpInside)
         addSubview(nextButton)
         
         setViewConstraints()
@@ -81,5 +87,9 @@ public class MeasureContentView: UIView {
         waterAmountLabel.text = "\(waterText) Ounces of Water"
         coffeeAmountLabel.text = "\(coffeeText) Grams of Coffee"
         
+    }
+    
+    @objc func didTouchUpOnNext() {
+        delegate?.nextStep(waterOunces, coffeeGrams)
     }
 }

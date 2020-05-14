@@ -1,10 +1,14 @@
 import UIKit
 
+public protocol MeasureDelegate {
+    func nextStep(_ waterOunces: Double, _ coffeeGrams: Double)
+}
+
 public class MeasureView: UIView {
     let titleLabel = UILabel()
     let titleText = "Measure"
     let contentView = MeasureContentView()
-    
+    public var delegate: MeasureDelegate?
     
     public override func layoutSubviews() {
         titleLabel.text = titleText
@@ -19,6 +23,7 @@ public class MeasureView: UIView {
         contentView.backgroundColor = UIColor.black.withAlphaComponent(0.5)
         contentView.alpha = 0.0
         contentView.layer.cornerRadius = 10.0
+        contentView.delegate = self
         addSubview(contentView)
         
         setViewConstraints()
@@ -41,20 +46,27 @@ public class MeasureView: UIView {
     }
     
     public func animateTitles(_ finished: @escaping (Bool) -> Void) {
-        UIView.animateKeyframes(withDuration: 4.0,
-                                delay: 0.0,
-                                options: [.calculationModeCubic],
-                                animations: {
-                                    UIView.addKeyframe(withRelativeStartTime: 0.0,
-                               relativeDuration: 2.0/4.0,
-                               animations: {
-                                self.titleLabel.alpha = 1.0
+        UIView.animateKeyframes(withDuration: 4.0, delay: 0.0, options: [.calculationModeCubic], animations: {
+            UIView.addKeyframe(withRelativeStartTime: 0.0, relativeDuration: 2.0/4.0, animations: {
+                self.titleLabel.alpha = 1.0
             })
-            UIView.addKeyframe(withRelativeStartTime: 2.0/4.0,
-                               relativeDuration: 2.0/4.0,
-                               animations: {
+            UIView.addKeyframe(withRelativeStartTime: 2.0/4.0, relativeDuration: 2.0/4.0, animations: {
                 self.contentView.alpha = 1.0
             })
         }, completion: finished)
+    }
+    
+    public func hideView(_ finished: @escaping (Bool) -> Void) {
+        UIView.animateKeyframes(withDuration: 1.0, delay: 0.0, options: [.calculationModeCubic], animations: {
+            UIView.addKeyframe(withRelativeStartTime: 0.0, relativeDuration: 1.0, animations: {
+                self.alpha = 0.0
+            })
+        }, completion: finished)
+    }
+}
+
+extension MeasureView: MeasureContentDelegate {
+    func nextStep(_ waterOunces: Double, _ coffeeGrams: Double) {
+        delegate?.nextStep(waterOunces, coffeeGrams)
     }
 }
