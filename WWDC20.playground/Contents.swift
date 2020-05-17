@@ -4,6 +4,7 @@ import AVFoundation
 import AVKit
 
 class BrewViewController: UIViewController {
+    var blurredEffectView = UIVisualEffectView()
     let introductionView = IntroductionView()
     let measureView = MeasureView()
     let timerView = TimerView()
@@ -21,9 +22,10 @@ class BrewViewController: UIViewController {
         view.addSubview(backgroundImageView)
         
         let blurEffect = UIBlurEffect(style: .light)
-        blurEffect.isAccessibilityElement = false
-        let blurredEffectView = UIVisualEffectView(effect: blurEffect)
+        blurredEffectView = UIVisualEffectView(effect: blurEffect)
         blurredEffectView.frame = view.frame
+        blurredEffectView.alpha = 0.0
+        blurredEffectView.isAccessibilityElement = false
         view.addSubview(blurredEffectView)
     }
     
@@ -46,7 +48,9 @@ class BrewViewController: UIViewController {
             measureView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             measureView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
-        
+        UIView.animate(withDuration: 1.0) {
+            self.blurredEffectView.alpha = 1.0
+        }
         introductionView.animateTitles { _ in
             self.measureView.animateTitles { _ in
                 UIAccessibility.post(notification: UIAccessibility.Notification.layoutChanged, argument: nil)
@@ -154,11 +158,11 @@ public class FinalView: UIView {
     }
     
     public func animateTitles(_ finished: @escaping (Bool) -> Void) {
-        UIView.animateKeyframes(withDuration: 4.0, delay: 0.0, options: [.calculationModeCubic], animations: {
-            UIView.addKeyframe(withRelativeStartTime: 0.0, relativeDuration: 2.0/4.0, animations: {
+        UIView.animateKeyframes(withDuration: 2.0, delay: 0.0, options: [.calculationModeCubic], animations: {
+            UIView.addKeyframe(withRelativeStartTime: 0.0, relativeDuration: 1.0/2.0, animations: {
                 self.titleLabel.alpha = 1.0
             })
-            UIView.addKeyframe(withRelativeStartTime: 2.0/4.0, relativeDuration: 2.0/4.0, animations: {
+            UIView.addKeyframe(withRelativeStartTime: 1.0/2.0, relativeDuration: 1.0/2.0, animations: {
                 self.contentView.alpha = 1.0
             })
         }, completion: finished)

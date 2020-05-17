@@ -44,17 +44,17 @@ public class IntroductionView: UIView {
     }
     
     public func animateTitles(_ finished: @escaping (Bool) -> Void) {
-        UIView.animateKeyframes(withDuration: 4.0,
+        UIView.animateKeyframes(withDuration: 2.0,
                                 delay: 2.0,
                                 options: [.calculationModeCubic],
                                 animations: {
                                     UIView.addKeyframe(withRelativeStartTime: 0.0,
-                               relativeDuration: 2.0/4.0,
+                               relativeDuration: 1.0/2.0,
                                animations: {
                 self.subtitleLabel.alpha = 1.0
             })
-            UIView.addKeyframe(withRelativeStartTime: 2.0/4.0,
-                               relativeDuration: 2.0/4.0,
+            UIView.addKeyframe(withRelativeStartTime: 1.0/2.0,
+                               relativeDuration: 1.0/2.0,
                                animations: {
                 self.titleLabel.alpha = 0.0
                 self.subtitleLabel.alpha = 0.0

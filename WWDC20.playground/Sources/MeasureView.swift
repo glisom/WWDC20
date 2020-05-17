@@ -46,11 +46,11 @@ public class MeasureView: UIView {
     }
     
     public func animateTitles(_ finished: @escaping (Bool) -> Void) {
-        UIView.animateKeyframes(withDuration: 4.0, delay: 0.0, options: [.calculationModeCubic], animations: {
-            UIView.addKeyframe(withRelativeStartTime: 0.0, relativeDuration: 2.0/4.0, animations: {
+        UIView.animateKeyframes(withDuration: 2.0, delay: 0.0, options: [.calculationModeCubic], animations: {
+            UIView.addKeyframe(withRelativeStartTime: 0.0, relativeDuration: 1.0/2.0, animations: {
                 self.titleLabel.alpha = 1.0
             })
-            UIView.addKeyframe(withRelativeStartTime: 2.0/4.0, relativeDuration: 2.0/4.0, animations: {
+            UIView.addKeyframe(withRelativeStartTime: 1.0/2.0, relativeDuration: 1.0/2.0, animations: {
                 self.contentView.alpha = 1.0
             })
         }, completion: finished)
