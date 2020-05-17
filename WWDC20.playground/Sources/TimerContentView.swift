@@ -1,10 +1,14 @@
 import UIKit
 
+protocol TimerContentDelegate {
+    func brewingFinished()
+}
+
 public class TimerContentView: UIView {
     let timerLabel = UILabel()
     let instructionLabel = UILabel()
     let startButton = UIButton()
-    let startText = "Bloom"
+    let startText = "Start"
     let finishText = "Continue"
     var waterOunces: Double = 12.0
     var coffeeGrams: Double = 7.0
@@ -12,6 +16,7 @@ public class TimerContentView: UIView {
     var time = 0
     let maxTime = 180
     var timer = Timer()
+    var delegate: TimerContentDelegate?
     
     public override func layoutSubviews() {
         timerLabel.text = "00:00"
@@ -73,10 +78,18 @@ public class TimerContentView: UIView {
             timerLabel.text = timeString(TimeInterval(time))
         } else {
             timer.invalidate()
-            let finalWaterAmount = waterOunces * 0.8
-            let finalWaterText = String(format: "%.1f", finalWaterAmount)
-            instructionLabel.text = "Pour \(finalWaterText) ounces while the coffee blooms for the remaining \(timeString(TimeInterval(maxTime - bloomTime)))."
-            startButton.setTitle(finishText, for: .normal)
+            
+            UIAccessibility.post(
+            notification: UIAccessibility.Notification.announcement,
+            argument: "Blooming done!")
+            UIView.animate(withDuration: 1.0) {
+                let finalWaterAmount = self.waterOunces * 0.8
+                let finalWaterText = String(format: "%.1f", finalWaterAmount)
+                self.instructionLabel.text = "Pour \(finalWaterText) ounces while the coffee blooms for the remaining \(self.timeString(TimeInterval(self.maxTime - self.bloomTime)))."
+                self.startButton.setTitle(self.finishText, for: .normal)
+                self.startButton.isUserInteractionEnabled = true
+                self.startButton.alpha = 1.0
+            }
         }
     }
     
@@ -86,6 +99,10 @@ public class TimerContentView: UIView {
             timerLabel.text = timeString(TimeInterval(time))
         } else {
             timer.invalidate()
+            UIAccessibility.post(
+                notification: UIAccessibility.Notification.announcement,
+                argument: "Brewing done!")
+            delegate?.brewingFinished()
         }
         
     }
@@ -99,13 +116,13 @@ public class TimerContentView: UIView {
     @objc func startTimer() {
         if time < 30 {
             timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateTimeText), userInfo: nil, repeats: true)
+            startButton.isUserInteractionEnabled = false
+            startButton.alpha = 0.7
         } else {
             timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateFinalTime), userInfo: nil, repeats: true)
+            startButton.isUserInteractionEnabled = false
+            startButton.alpha = 0.7
         }
-    }
-    
-    func finishBrew() {
-        
     }
 }
 

@@ -1,16 +1,14 @@
 import UIKit
 
-public protocol TimerDelegate {
-    func brewingFinished()
+public protocol HeatDelegate {
+    func nextStep()
 }
 
-public class TimerView: UIView {
+public class HeatView: UIView {
     let titleLabel = UILabel()
-    let titleText = "Pour"
-    let skipText = "Skip"
-    let skipButton = UIButton()
-    let contentView = TimerContentView()
-    public var delegate: TimerDelegate?
+    let titleText = "Heat"
+    public var delegate: HeatDelegate?
+    let contentView = HeatContentView()
     
     public override func layoutSubviews() {
         titleLabel.text = titleText
@@ -45,12 +43,6 @@ public class TimerView: UIView {
             titleLabel.widthAnchor.constraint(equalTo: widthAnchor, constant: -40.0),
             titleLabel.bottomAnchor.constraint(equalTo: contentView.topAnchor, constant: -20.0)
         ])
-        
-        skipButton.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            skipButton.topAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 10.0),
-            skipButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-        ])
     }
     
     public func animateTitles(_ finished: @escaping (Bool) -> Void) {
@@ -61,15 +53,7 @@ public class TimerView: UIView {
             UIView.addKeyframe(withRelativeStartTime: 2.0/4.0, relativeDuration: 2.0/4.0, animations: {
                 self.contentView.alpha = 1.0
             })
-        }, completion: { success in
-            self.skipButton.setTitle(self.skipText, for: .normal)
-            self.skipButton.titleLabel?.font = UIFont.preferredFont(forTextStyle: .headline)
-            self.skipButton.setTitleColor(.darkGray, for: .normal)
-            self.skipButton.addTarget(self, action: #selector(self.brewingFinished), for: .touchUpInside)
-            self.addSubview(self.skipButton)
-            
-            finished(success)
-        })
+        }, completion: finished)
     }
     
     public func hideView(_ finished: @escaping (Bool) -> Void) {
@@ -81,8 +65,8 @@ public class TimerView: UIView {
     }
 }
 
-extension TimerView: TimerContentDelegate {
-    @objc func brewingFinished() {
-        delegate?.brewingFinished()
+extension HeatView: HeatContentDelegate {
+    func nextStep() {
+        delegate?.nextStep()
     }
 }
