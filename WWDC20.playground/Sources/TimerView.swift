@@ -28,6 +28,12 @@ public class TimerView: UIView {
         contentView.delegate = self
         addSubview(contentView)
         
+        skipButton.setTitle(skipText, for: .normal)
+        skipButton.titleLabel?.font = UIFont.preferredFont(forTextStyle: .headline)
+        skipButton.setTitleColor(.darkGray, for: .normal)
+        skipButton.addTarget(self, action: #selector(brewingFinished), for: .touchUpInside)
+        addSubview(skipButton)
+        
         setViewConstraints()
     }
     
@@ -62,12 +68,7 @@ public class TimerView: UIView {
                 self.contentView.alpha = 1.0
             })
         }, completion: { success in
-            self.skipButton.setTitle(self.skipText, for: .normal)
-            self.skipButton.titleLabel?.font = UIFont.preferredFont(forTextStyle: .headline)
-            self.skipButton.setTitleColor(.darkGray, for: .normal)
-            self.skipButton.addTarget(self, action: #selector(self.brewingFinished), for: .touchUpInside)
-            self.addSubview(self.skipButton)
-            
+            self.skipButton.isHidden = false
             finished(success)
         })
     }
